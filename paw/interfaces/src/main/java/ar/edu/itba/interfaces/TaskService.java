@@ -1,8 +1,10 @@
 package ar.edu.itba.interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import ar.edu.itba.models.Priority;
+import ar.edu.itba.models.Project;
 import ar.edu.itba.models.Score;
 import ar.edu.itba.models.Status;
 import ar.edu.itba.models.Story;
@@ -34,5 +36,7 @@ public interface TaskService {
 	public Task changeDescription(final Task task, final String description);
 
 	public boolean taskNameExists(final Story story, final String title);
+
+	public Map<Project, Map<Story, List<Task>>> getPendingTasks(final User user);
 
 }

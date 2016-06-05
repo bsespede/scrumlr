@@ -44,6 +44,13 @@ public class ProjectController extends BaseController {
 	@Autowired
 	private UserService us;
 	
+	@RequestMapping(method = RequestMethod.GET, name = "project.list")
+	public ModelAndView getResource() {
+		final ModelAndView mav = new ModelAndView("project/projectList");
+		mav.addObject("projects", ps.getProjectsForUser(super.user()));
+		return mav;
+	}
+	
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public ModelAndView getNewResource(@ModelAttribute("projectForm") ProjectForm projectForm) {
 		final ModelAndView mav = new ModelAndView("project/newProject");

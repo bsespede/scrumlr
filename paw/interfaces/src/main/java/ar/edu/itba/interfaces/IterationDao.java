@@ -32,4 +32,6 @@ public interface IterationDao {
 
 	public int getMaxNumber(final Project project);
 
+	public List<Iteration> getIterationsForDate(final Project project, final LocalDate date);
+
 }

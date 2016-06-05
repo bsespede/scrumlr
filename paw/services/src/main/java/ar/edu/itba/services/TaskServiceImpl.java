@@ -1,15 +1,21 @@
 package ar.edu.itba.services;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ar.edu.itba.interfaces.IterationDao;
+import ar.edu.itba.interfaces.ProjectDao;
 import ar.edu.itba.interfaces.StoryDao;
 import ar.edu.itba.interfaces.TaskDao;
 import ar.edu.itba.interfaces.TaskService;
 import ar.edu.itba.models.Iteration;
 import ar.edu.itba.models.Priority;
+import ar.edu.itba.models.Project;
 import ar.edu.itba.models.Score;
 import ar.edu.itba.models.Status;
 import ar.edu.itba.models.Story;
@@ -20,10 +26,16 @@ import ar.edu.itba.models.User;
 public class TaskServiceImpl implements TaskService{
 
 	@Autowired
+	private ProjectDao projectDao;
+	
+	@Autowired
 	private TaskDao taskDao;
 	
 	@Autowired
 	private StoryDao storyDao;
+	
+	@Autowired
+	private IterationDao iterationDao;
 
 	@Autowired TaskServiceImpl(TaskDao newTaskDao, StoryDao newStoryDao){
 		this.taskDao = newTaskDao;
@@ -351,6 +363,34 @@ public class TaskServiceImpl implements TaskService{
 		}
 		
 		return taskDao.taskExists(story, title);
+	}
+
+	@Override
+	public Map<Project, Map<Story, List<Task>>> getPendingTasks(User user) {
+		if (user == null) {
+			throw new IllegalArgumentException("User can't be null");
+		}
+		
+		Map<Project, Map<Story, List<Task>>> pendingTasks = new HashMap<Project, Map<Story, List<Task>>>();
+		
+		List<Project> projects = projectDao.getProjectsForUser(user);
+		
+		for (Project project: projects) {
+			List<Iteration> currentIterations = iterationDao.getIterationsForDate(project, LocalDate.now());
+			Map<Story, List<Task>> pendingStories = new HashMap<Story, List<Task>>();			
+			for (Iteration iteration: currentIterations) {
+				List<Story> iterationPendingStories = taskDao.getPendingStories(iteration, user);
+				for (Story story: iterationPendingStories) {
+					List<Task> storyPendingTasks = taskDao.getPendingTasks(story, user);	
+					pendingStories.put(story, storyPendingTasks);
+				}
+			}
+			if (!pendingStories.isEmpty()) {
+				pendingTasks.put(project, pendingStories);
+			}
+		}
+		
+		return pendingTasks;
 	}
 
 }

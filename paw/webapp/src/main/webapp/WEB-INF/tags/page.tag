@@ -33,6 +33,18 @@
 	                <a class="navbar-brand" href="${pageContext.request.contextPath}/">Scrumlr</a>
 	            </div>	            
 	            <nav class="collapse navbar-collapse" id="nav-1">
+	            	<ul class="nav navbar-nav">
+	            		<li>
+	            			<a href="${pageContext.request.contextPath}">
+								<span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> <spring:message code="navbar.dashboard"/>
+							</a>
+						</li>
+						<li>
+	            			<a href="${pageContext.request.contextPath}/project">
+								<span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> <spring:message code="navbar.projectList"/>
+							</a>
+						</li>
+	            	</ul>
 	                <ul class="nav navbar-nav navbar-right"> 
 	                	<c:choose>                   
 		                	<c:when test="${not empty user}">

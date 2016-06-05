@@ -2,6 +2,7 @@ package ar.edu.itba.interfaces;
 
 import java.util.List;
 
+import ar.edu.itba.models.Iteration;
 import ar.edu.itba.models.Priority;
 import ar.edu.itba.models.Score;
 import ar.edu.itba.models.Status;
@@ -40,5 +41,9 @@ public interface TaskDao {
 	public List<Task> getUnfinishedTasks(final Story oldStory);
 
 	public void cloneTaskToStory(final Task task, final Story story);
+
+	public List<Task> getPendingTasks(final Story story, final User user);
+
+	public List<Story> getPendingStories(final Iteration iteration, final User user);
 	
 }

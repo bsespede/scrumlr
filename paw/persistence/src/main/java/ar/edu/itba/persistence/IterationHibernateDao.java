@@ -164,9 +164,25 @@ public class IterationHibernateDao implements IterationDao{
 	@Override
 	@Transactional
 	public int getMaxNumber(Project project) {
+		try {
 			final TypedQuery<Integer> query = em.createQuery("select coalesce(max(number),0) from Iteration iteration where iteration.project = :project", Integer.class);
 			query.setParameter("project", project);
 			return query.getSingleResult();
+		} catch (Exception exception) {
+			throw new IllegalStateException("Database failed to get max iteration number");
+		}	
+	}
+
+	@Override
+	public List<Iteration> getIterationsForDate(Project project, LocalDate date) {
+		try {
+			final TypedQuery<Iteration> query = em.createQuery("from Iteration iteration where project = :project and :date >= iteration.startDate and :date <= iteration.endDate", Iteration.class);
+			query.setParameter("project", project);
+			query.setParameter("date", date);
+			return query.getResultList();
+		} catch (Exception exception) {
+			throw new IllegalStateException("Database failed to get iterations for date");
+		}
 	}
 
 }

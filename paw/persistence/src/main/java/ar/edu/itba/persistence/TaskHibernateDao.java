@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import ar.edu.itba.interfaces.TaskDao;
+import ar.edu.itba.models.Iteration;
 import ar.edu.itba.models.Priority;
 import ar.edu.itba.models.Score;
 import ar.edu.itba.models.Status;
@@ -229,6 +230,34 @@ public class TaskHibernateDao implements TaskDao{
 			em.flush();
 		} catch (Exception exception) {
 			throw new IllegalStateException("Database failed to clone task ");
+		}
+	}
+
+	@Override
+	public List<Task> getPendingTasks(Story story, User user) {
+		try{
+			final TypedQuery<Task> query = em.createQuery("from Task task where task.story = :story and (task.status = :notStarted or task.status = :started) and owner = :user", Task.class);
+			query.setParameter("user", user);
+			query.setParameter("story", story);
+			query.setParameter("notStarted", Status.NOT_STARTED);
+			query.setParameter("started", Status.STARTED);
+			return query.getResultList();
+		} catch (Exception exception) {
+			throw new IllegalStateException("Database failed to get pending tasks for user");
+		}
+	}
+
+	@Override
+	public List<Story> getPendingStories(Iteration iteration, User user) {
+		try{
+			final TypedQuery<Story> query = em.createQuery("select distinct task.story from Task task where task.story.iteration = :iteration and (task.status = :notStarted or task.status = :started) and owner = :user", Story.class);
+			query.setParameter("user", user);
+			query.setParameter("iteration", iteration);
+			query.setParameter("notStarted", Status.NOT_STARTED);
+			query.setParameter("started", Status.STARTED);
+			return query.getResultList();
+		} catch (Exception exception) {
+			throw new IllegalStateException("Database failed to get pending stories for user");
 		}
 	}
 
