@@ -34,12 +34,24 @@ public abstract class LogEvent implements Serializable {
         return actor;
     }
 
+    public void setActor(final User actor) {
+        this.actor = actor;
+    }
+
     public Project getProject() {
         return project;
     }
 
+    public void setProject(final Project project) {
+        this.project = project;
+    }
+
     public LocalDateTime getTime() {
         return time;
+    }
+
+    public void setTime(final LocalDateTime time) {
+        this.time = time;
     }
 
     @Id
