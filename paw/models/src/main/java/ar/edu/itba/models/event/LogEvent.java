@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -16,7 +17,7 @@ import ar.edu.itba.models.Project;
 import ar.edu.itba.models.User;
 
 @Entity
-@Inheritance
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "event")
 public abstract class LogEvent implements Serializable {
 
@@ -32,6 +33,10 @@ public abstract class LogEvent implements Serializable {
 
     public User getActor() {
         return actor;
+    }
+
+    public void setEventId(final int eventId) {
+        this.eventId = eventId;
     }
 
     public void setActor(final User actor) {
@@ -59,10 +64,10 @@ public abstract class LogEvent implements Serializable {
     @Column(name = "event_id", nullable = false, unique = true)
     private int eventId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User actor;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Project project;
 
     @Column(name = "time", nullable = false)
